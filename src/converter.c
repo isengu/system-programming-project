@@ -12,7 +12,7 @@ const char delete_command[] = "sil:";
 const char go_end_command[] = "sonagit:";
 const char stop_command[] = "dur:";
 
-Dllist cursor;
+Dllist cursor; // cursor to keep track of the current position in the content
 
 void convert_file(char *input_file, char *output_file)
 {
@@ -135,19 +135,29 @@ void modify_content(IS is, Dllist content, int is_delete)
         }
 }
 
+/*
+ * Writes the given number of characters to the content from the cursor position.
+ */
 void content_write(Dllist content, int number, char character)
 {
         for (int j = 0; j < number; j++)
         {
+                // insert character after the cursor and increase the cursor position
                 dll_insert_a(cursor, new_jval_c(character));
                 cursor = dll_next(cursor);
         }
 }
 
+/*
+ * Deletes the given number of characters from the content from the cursor position.
+ * If it cannot delete the given number of characters, it deletes until the beginning of the content.
+ */
 void content_delete(Dllist content, int number, char character)
 {
         int _number = number;
 
+        // reverse traverse the content from the cursor position and delete the character if it matches the given character
+        // until the number of characters to delete is reached or the cursor reaches the beginning of the content
         while (_number > 0 && cursor != content)
         {
                 if (jval_c(dll_val(cursor)) == character)
@@ -180,6 +190,9 @@ char convert_token(char *token)
         }
 }
 
+/*
+ * Writes the content to the output file.
+ */
 void write_content_to_file(Dllist content, char *output_file)
 {
         FILE *file = fopen(output_file, "w");
