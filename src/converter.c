@@ -85,7 +85,7 @@ int process_line(IS is, Dllist content)
         }
         else
         {
-                fprintf(stderr, "ERROR: Invalid command: `%s`\n", command);
+                fprintf(stderr, "ERROR: Invalid command: `%s`. On line: %d\n", command, is->line);
                 exit(1);
         }
 
